@@ -1,4 +1,3 @@
-
 import argparse
 import numpy as np
 import pandas as pd
@@ -19,14 +18,14 @@ class KnnClassifier:
         self.ids = (123456789, 987654321)
 
     def distance(self, X1, X2):
-        return np.linalg.norm(X1-X2)
+        return np.linalg.norm(X1 - X2)
 
     def train_test_split(self, X, y, test_size):
-        # TODO: shuffle
-        # np.random.shuffle(X)
-        split_idx = int(len(X)*(1-test_size))
+        concededData = np.c_[X, y]
+        np.random.shuffle(concededData)
+        split_idx = int(len(X) * (1 - test_size))
+        X, y = np.delete(concededData, -1, axis=1), concededData[:, -1]
         x_train, x_test, y_train, y_test = X[:split_idx], X[split_idx:], y[:split_idx], y[split_idx:]
-
         return [x_train, x_test, y_train, y_test]
 
     def fit(self, X: np.ndarray, y: np.ndarray) -> None:
@@ -81,18 +80,10 @@ class KnnClassifier:
             ans = np.bincount(votes).argmax()
             y_pred.append(ans)
 
-        # choose most common label
-
-
-        # TODO - your code here
-        pass
-
-        ### Example code - don't use this:
         return y_pred
 
 
 def main():
-
     print("*" * 20)
     print("Started HW1_ID1_ID2.py")
     # Parsing script arguments
