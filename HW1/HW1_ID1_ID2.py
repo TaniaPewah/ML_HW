@@ -15,18 +15,10 @@ class KnnClassifier:
         self.p = p
 
         # TODO - Place your student IDs here. Single submitters please use a tuple like so: self.ids = (123456789,)
-        self.ids = (123456789, 987654321)
+        self.ids = (320932544, 987654321)
 
     def distance(self, X1, X2):
         return np.linalg.norm(X1 - X2)
-
-    def train_test_split(self, X, y, test_size):
-        concededData = np.c_[X, y]
-        np.random.shuffle(concededData)
-        split_idx = int(len(X) * (1 - test_size))
-        X, y = np.delete(concededData, -1, axis=1), concededData[:, -1]
-        x_train, x_test, y_train, y_test = X[:split_idx], X[split_idx:], y[:split_idx], y[split_idx:]
-        return [x_train, x_test, y_train, y_test]
 
     def fit(self, X: np.ndarray, y: np.ndarray) -> None:
         """
@@ -38,14 +30,8 @@ class KnnClassifier:
             Array datatype is guaranteed to be np.uint8.
         """
 
-        x_train, x_test, y_train, y_test = self.train_test_split(X, y, 0.2)
-
-        self.X_train = x_train
-        self.y_train = y_train
-        self.X_test = x_test
-        self.y_test = y_test
-
-        # TODO - what should be here?
+        self.y_real = y
+        self.y_pred = []
 
         pass
 
@@ -58,29 +44,27 @@ class KnnClassifier:
             Array datatype is guaranteed to be np.float32.
         :return: A 1-dimensional numpy array of m rows. Should be of datatype np.uint8.
         """
-        y_pred = []
+
         # find the distances
-        for i in range(len(self.X_test)):
+        for unknownX in range(len(X)):
             distances = []
             votes = []
-            for j in range(len(self.X_train)):
-                dist = self.distance(self.X_test[i], self.X_train[j])
+            for j in range(len(X)):
+                dist = self.distance(X[unknownX], X[j])
                 distances.append([dist, j])
 
             # sort the distances and take k nearest
             distances.sort()
-            distances = distances[0:self.k]
+            distances = distances[1:self.k + 1]
 
             # get the corresponding votes
             for distance, j in distances:
-                votes.append(self.y_train[j])
-            print(votes)
-            print(distances)
+                votes.append(self.y_real[j])
 
             ans = np.bincount(votes).argmax()
-            y_pred.append(ans)
+            self.y_pred.append(ans)
 
-        return y_pred
+        return self.y_pred
 
 
 def main():
