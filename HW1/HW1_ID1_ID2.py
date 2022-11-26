@@ -32,8 +32,27 @@ class KnnClassifier:
 
         self.y_real = y
         self.y_pred = []
+        self.X_train = X
 
         pass
+
+    def calcDistances(self, X: np.ndarray, X_index: int) -> np.ndarray:
+        distances = []
+        for j in range(len(self.X_train)):
+            dist = self.distance(X[X_index], self.X_train[j])
+            distances.append([dist, j])
+        return distances
+
+    def getMajorityVote(self, distances: np.ndarray) -> np.ndarray:
+        votes = []
+        for distance, j in distances:
+            votes.append(self.y_real[j])
+        votes_dist = np.bincount(votes)
+        if len(np.unique(votes_dist)) < len(votes_dist):
+            closest_vote = distances[0]
+            return self.y_real[closest_vote[1]]
+        return votes_dist.argmax()
+
 
     def predict(self, X: np.ndarray) -> np.ndarray:
         """
@@ -45,27 +64,17 @@ class KnnClassifier:
         :return: A 1-dimensional numpy array of m rows. Should be of datatype np.uint8.
         """
 
-        # find the distances
-        for unknownX in range(len(X)):
-            distances = []
-            votes = []
-            for j in range(len(X)):
-                dist = self.distance(X[unknownX], X[j])
-                distances.append([dist, j])
+        # addTen = np.vectorize(add)
+        # arr = addTen(arr)
 
+        # find the distances
+        for X_index in range(len(X)):
+            distances = self.calcDistances(X, X_index)
             # sort the distances and take k nearest
             distances.sort()
-            distances = distances[1:self.k + 1]
-
-            # get the corresponding votes
-            for distance, j in distances:
-                votes.append(self.y_real[j])
-
-            ans = np.bincount(votes).argmax()
-            self.y_pred.append(ans)
-
+            distances = distances[0:self.k]
+            self.y_pred.append(self.getMajorityVote(distances))
         return self.y_pred
-
 
 def main():
     print("*" * 20)
