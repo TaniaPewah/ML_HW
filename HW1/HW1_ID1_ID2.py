@@ -2,7 +2,6 @@ import argparse
 import numpy as np
 import pandas as pd
 
-
 class KnnClassifier:
     def __init__(self, k: int, p: float):
         """
@@ -15,10 +14,10 @@ class KnnClassifier:
         self.p = p
 
         # TODO - Place your student IDs here. Single submitters please use a tuple like so: self.ids = (123456789,)
-        self.ids = (320932544, 987654321)
+        self.ids = (320932544, 32291553)
 
     def distance(self, X1, X2):
-        return np.linalg.norm(X1 - X2)
+        return np.power(sum(np.power(abs(X1-X2), self.p)), 1/self.p)
 
     def fit(self, X: np.ndarray, y: np.ndarray) -> None:
         """
@@ -63,9 +62,6 @@ class KnnClassifier:
             Array datatype is guaranteed to be np.float32.
         :return: A 1-dimensional numpy array of m rows. Should be of datatype np.uint8.
         """
-
-        # addTen = np.vectorize(add)
-        # arr = addTen(arr)
 
         # find the distances
         for X_index in range(len(X)):
