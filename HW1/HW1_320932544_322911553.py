@@ -12,9 +12,7 @@ class KnnClassifier:
         """
         self.k = k
         self.p = p
-
-        # TODO - Place your student IDs here. Single submitters please use a tuple like so: self.ids = (123456789,)
-        self.ids = (320932544, 32291553)
+        self.ids = (320932544, 322911553)
 
     def distance(self, X1, X2):
         return np.power(sum(np.power(abs(X1-X2), self.p)), 1/self.p)
@@ -28,12 +26,9 @@ class KnnClassifier:
         :param y: A 1-dimensional numpy array of m rows. it is guaranteed to match X's rows in length (|m_x| == |m_y|).
             Array datatype is guaranteed to be np.uint8.
         """
-
         self.y_real = y
         self.y_pred = []
         self.X_train = X
-
-        pass
 
     def calcDistances(self, X: np.ndarray, X_index: int) -> np.ndarray:
         distances = []
@@ -100,7 +95,6 @@ def main():
     print("Predicting...")
     y_pred = model.predict(X)
     print("Done")
-    # TODO: calc accuracy against y_test
     accuracy = np.sum(y_pred == y) / len(y)
     print(f"Train accuracy: {accuracy * 100 :.2f}%")
     print("*" * 20)
